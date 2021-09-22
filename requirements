@@ -1,11 +1,11 @@
 Books
 
 post
-new book
+new book✅
 
 Put
-update book details 
-update or add new author
+update book details ✅
+update or add new author✅
 
 delete(could be under put)
 delete a Books
@@ -14,10 +14,10 @@ delete a author from a book
 Authors
 
 post
-new author
+new author✅
 
 put
-author details
+author details✅
 
 delete
 delete an author
@@ -25,11 +25,11 @@ delete an author
 Publications
 
 post
-new publication
+new publication✅
 
 put
-update publicaton details
-update new book to a publication
+update publicaton details✅
+update new book to a publication✅
 
 delete
 delete a book from publication

@@ -219,5 +219,58 @@ deardiary.put("/book/author/update/:isbn", (req,res) => {
     return res.json({books: database.books, authors: database.authors,
          message: "New author was added"});
 });
+/*
+Route             /author/update/
+Description       update author details(name)
+Access            public
+Parameters        ID
+Method            put
+*/
+deardiary.put("/author/update/:ID",(req,res) => {
+     database.authors.forEach((author) => {
+       if(author.id == req.params.ID)  {
+           author.name = req.body.authorName;
+           return;
+       } 
+     });
+     return res.json({authors : database.authors});
+});
+/*
+Route             /publication/update/
+Description       update publication details(name)
+Access            public
+Parameters        ID
+Method            put
+*/
+deardiary.put("/publication/update/:ID",(req,res) => {
+     database.publications.forEach((publication) => {
+       if(publication.id == req.params.ID)  {
+        publication.name = req.body.publicationName;
+           return;
+       } 
+     });
+     return res.json({publications : database.publications});
+});
+/*
+Route             /publication/book/update/
+Description       update/add new book
+Access            public
+Parameters        isbn
+Method            put
+*/
+deardiary.put("/publication/book/update/:isbn",(req,res) => {
+    database.publications.forEach((publication) =>{
+     if(publication.id === req.body.pubID){
+         return publication.books.push(req.params.isbn)};
+    }); 
+    
+    database.books.forEach((book) => {
+     if(book.ISBN === req.params.isbn){
+         book.publication = req.body.pubID;
+     return ;}
+    });  
+    return res.json({publications: database.publications,books: database.books,
+    message: "New book has been added"}); 
+});
 
 deardiary.listen(3000, () => console.log("Server running😎!!!"));

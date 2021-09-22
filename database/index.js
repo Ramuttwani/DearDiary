@@ -11,7 +11,7 @@ const books = [{
 {
     ISBN :"23467two",
     title :"getting started with Python",
-    authors:[1,2],
+    authors:[1,],
     language: "en" ,
     pubDate: "2021-16-09",
     numofPage:228,
@@ -34,8 +34,13 @@ const authors = [{
 const publications = [{
 id:1,
 name:"chakra",
-books:"23467one",
+books:["23467one"],
 },
+{
+id:2,
+name:"github",
+books:[],
+}
 ];
 
 module.exports = {books,authors,publications};
