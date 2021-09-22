@@ -8,8 +8,8 @@ update book details ✅
 update or add new author✅
 
 delete(could be under put)
-delete a Books
-delete a author from a book
+delete a Books✅
+delete a author from a book✅
 ---------------------------------------------------------------------------------------------------------------------------------------
 Authors
 
@@ -32,5 +32,5 @@ update publicaton details✅
 update new book to a publication✅
 
 delete
-delete a book from publication
-delete publication
+delete a book from publication✅
+delete publication✅
