@@ -4,6 +4,10 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const database = require("./database/index");
+///models
+const BookModel = require("./database/book");
+const AuthorModel = require("./database/author");
+const PublicationModel = require("./database/publication");
 //Initializing
 const deardiary = express();
 //Configurations
@@ -11,7 +15,7 @@ deardiary.use(express.json());
 
 //establish database connection
 mongoose.connect(process.env.MONGO_URL
-).then(() => console.log("connnection established!!!"));
+).then(() => console.log("connnection established!!!")); 
 /*
 Route             /
 Description       get all books
