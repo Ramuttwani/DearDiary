@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const BookSchema = mongoose.Schema({    
         ISBN : String,
         title :String,
-        authors:[Number],
+        authors: [Number] ,
         language: String,
         pubDate: String,
         numofPage:Number,
@@ -12,6 +12,6 @@ const BookSchema = mongoose.Schema({
     });
 
 //creating book model
-const BookModel = mongoose.model("books","BookSchema");
+const BookModel = mongoose.model('books',BookSchema);
 
 module.exports = BookModel;

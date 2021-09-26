@@ -23,9 +23,10 @@ Access            public
 Parameters        none
 Method            get
 */ 
-deardiary.get("/",(req,res) => {
-    return res.json({books : database.books});
-} );
+deardiary.get("/", async (req,res) => {
+    const getAllBooks = await BookModel.find();
+    return res.json({books : getAllBooks});
+});
 /*
 Route             /is
 Description       get specific book based on isbn
@@ -33,10 +34,11 @@ Access            public
 Parameters        isbn
 Method            get
 */ 
-deardiary.get("/is/:isbn", (req,res) => {
-    const getspecificBook = database.books.filter((book) => book.ISBN === req.params.isbn );
-    if(getspecificBook.length === 0){
-        return res.json({error:`No book found for the isbn of ${req.params.isbn}`,
+deardiary.get("/is/:isbn", async (req,res) => {
+   const getspecificBook = await BookModel.findOne({ISBN: req.params.isbn});
+   // const getspecificBook = database.books.findOne((book) => book.ISBN === req.params.isbn );
+    if(!getspecificBook){
+        return res.json({error:`No book found for the isbn of ${req.params.isbn}`
     });
     }
   return res.json({book : getspecificBook});
@@ -48,10 +50,11 @@ Access            public
 Parameters        category
 Method            get
 */ 
-deardiary.get("/c/:category", (req,res) => {
-    const getspecificBooks = database.books.filter((book) =>
-     book.category.includes(req.params.category));
-    if(getspecificBooks.length === 0){
+deardiary.get("/c/:category",async (req,res) => { 
+  const getspecificBooks = await BookModel.findOne({category: req.params.category });
+    // const getspecificBooks = database.books.filter((book) =>
+     //book.category.includes(req.params.category));
+    if(!getspecificBooks){
         return res.json({error:`No book found for the category of ${req.params.category}`,
     });
     }
@@ -80,8 +83,9 @@ Access            public
 Parameters        none
 Method            get
 */
-deardiary.get("/author", (req,res) => {
-    return res.json({authors : database.authors});
+deardiary.get("/author", async (req,res) => {
+    const getAllAuthors = await AuthorModel.find();
+    return res.json({authors : getAllAuthors});
 });
 /*
 Route             /author
@@ -162,11 +166,11 @@ Access            public
 Parameters        none
 Method            post
 */
-deardiary.post("/book/new", (req,res) => {
+deardiary.post("/book/new", async (req,res) => {
    const {newBook} = req.body;
-
-   database.books.push(newBook);
-   return res.json({books: database.books, message: "book wass added!"});
+    BookModel.create(newBook);
+  // database.books.push(newBook);
+   return res.json({ message: "book wass added!"});
 });
 /*
 Route             /author/new
@@ -177,9 +181,9 @@ Method            post
 */
 deardiary.post("/author/new", (req,res) => {
     const {newAuthor} = req.body;
- 
-    database.authors.push(newAuthor);
-    return res.json({authors: database.authors, message: "author wass added!"});
+    AuthorModel.create(newAuthor);
+   // database.authors.push(newAuthor);
+    return res.json({ message: "author wass added!"});
  });
  /*
 Route             /publication/new
@@ -190,9 +194,9 @@ Method            post
 */
 deardiary.post("/publication/new", (req,res) => {
     const {newPublication} = req.body;
- 
-    database.publications.push(newPublication);
-    return res.json({publications: database.publications, message: "publication was added!"});
+   PublicationModel.create(newPublication);
+   // database.publications.push(newPublication);
+    return res.json({ message: "publication wass added!"});
  });
   /*
 Route             /book/update/
