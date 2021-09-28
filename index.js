@@ -36,12 +36,11 @@ Method            get
 */ 
 deardiary.get("/is/:isbn", async (req,res) => {
    const getspecificBook = await BookModel.findOne({ISBN: req.params.isbn});
-   // const getspecificBook = database.books.findOne((book) => book.ISBN === req.params.isbn );
-    if(!getspecificBook){
+   if(!getspecificBook){
         return res.json({error:`No book found for the isbn of ${req.params.isbn}`
     });
     }
-  return res.json({book : getspecificBook});
+  return res.json({book : getspecificBook });
 });
 /*
 Route             /c
@@ -52,8 +51,6 @@ Method            get
 */ 
 deardiary.get("/c/:category",async (req,res) => { 
   const getspecificBooks = await BookModel.findOne({category: req.params.category });
-    // const getspecificBooks = database.books.filter((book) =>
-     //book.category.includes(req.params.category));
     if(!getspecificBooks){
         return res.json({error:`No book found for the category of ${req.params.category}`,
     });
@@ -67,10 +64,9 @@ Access            public
 Parameters        authors
 Method            get
 */
-deardiary.get("/a/:authors", (req,res) => {
-     const getSpecificbooks = database.books.filter((book) => 
-     book.authors.includes(parseInt(req.params.authors)));
-     if(getSpecificbooks.length === 0){
+deardiary.get("/a/:authors", async (req,res) => {
+    const getSpecificbooks = await BookModel.findOne({authors: req.params.authors});
+     if(!getSpecificbooks){
         return res.json({error: `No book found for the author ${req.params.authors}`,
     });
      }
@@ -94,14 +90,13 @@ Access            public
 Parameters        ID
 Method            get
  */
-deardiary.get("/author/:ID", (req,res) => {
-    const getspecificAuthor = database.authors.filter((author) =>
-     author.id === parseInt(req.params.ID) );
-    if(getspecificAuthor.length === 0){
+deardiary.get("/author/:ID", async (req,res) => {
+    const getspecificAuthor = await AuthorModel.findOne({ id: req.params.ID});
+    if(!getspecificAuthor){
         return res.json({error:`No author found for the name of ${req.params.ID}`,
     });
     }
-  return res.json({book : getspecificAuthor});
+  return res.json({author : getspecificAuthor});
 });
 /*
 Route             /author
@@ -110,10 +105,9 @@ Access            public
 Parameters        isbn
 Method            get
 */
-deardiary.get("/authors/:isbn",(req,res) => {
-    const getspecificAuthors = database.authors.filter((author) => 
-    author.books.includes(req.params.isbn));
-    if(getspecificAuthors.length === 0){
+deardiary.get("/authors/:isbn",async (req,res) => {
+    const getspecificAuthors = await AuthorModel.findOne({ISBN: req.params.isbn});
+      if(!getspecificAuthors){
         return res.json({error : `No author found for the book ${req.params.isbn}`,})
     }
     return res.json({authors :getspecificAuthors});
@@ -125,8 +119,9 @@ Access            public
 Parameters        none
 Method            get
 */
-deardiary.get("/publications", (req,res) => {
-     return res.json({publications : database.publications});
+deardiary.get("/publications", async (req,res) => {
+    const getAllPublications = await PublicationModel.find();
+     return res.json({publications : getAllPublications});
 });
 /*
 Route             /publication
@@ -135,14 +130,13 @@ Access            public
 Parameters        ID
 Method            get
 */
-deardiary.get("/publication/:ID", (req,res) => {
-    const getspecificPublication = database.publications.filter((publication) =>
-     publication.id === parseInt(req.params.ID));
-     if(getspecificPublication.length === 0){
+deardiary.get("/publication/:ID", async (req,res) => {
+   const getspecificPublication = await PublicationModel.findOne({id: req.params.ID});
+    if(!getspecificPublication){
         return res.json({error:`No publication found for the name of ${req.params.ID}`,
     });
     }
-  return res.json({book : getspecificPublication});
+  return res.json({publication : getspecificPublication});
 });
 /*
 Route             /publications
@@ -151,10 +145,9 @@ Access            public
 Parameters        isbn
 Method            get
 */
-deardiary.get("/publications/:isbn",(req,res) => {
-    const getspecificPublications = database.publications.filter((publication) => 
-    publication.books.includes(req.params.isbn));
-    if(getspecificPublications.length === 0){
+deardiary.get("/publications/:isbn", async (req,res) => {
+   const getspecificPublications = await PublicationModel.findOne({ISBN: req.params.isbn});
+   if(!getspecificPublications){
         return res.json({error : `No publication found for the book ${req.params.isbn}`,})
     }
     return res.json({publications :getspecificPublications});
@@ -166,11 +159,10 @@ Access            public
 Parameters        none
 Method            post
 */
-deardiary.post("/book/new", async (req,res) => {
+deardiary.post("/book/new",  (req,res) => {
    const {newBook} = req.body;
     BookModel.create(newBook);
-  // database.books.push(newBook);
-   return res.json({ message: "book wass added!"});
+    return res.json({ message: "book wass added!"});
 });
 /*
 Route             /author/new
@@ -182,7 +174,6 @@ Method            post
 deardiary.post("/author/new", (req,res) => {
     const {newAuthor} = req.body;
     AuthorModel.create(newAuthor);
-   // database.authors.push(newAuthor);
     return res.json({ message: "author wass added!"});
  });
  /*
@@ -195,7 +186,6 @@ Method            post
 deardiary.post("/publication/new", (req,res) => {
     const {newPublication} = req.body;
    PublicationModel.create(newPublication);
-   // database.publications.push(newPublication);
     return res.json({ message: "publication wass added!"});
  });
   /*
@@ -205,14 +195,10 @@ Access            public
 Parameters        isbn
 Method            put
 */
-deardiary.put("/book/update/:isbn",(req,res) => {
-   database.books.forEach((book) => {
-       if(book.ISBN ===req.params.isbn){
-           book.title = req.body.bookTitle;
-           return;
-       }
-   });
-   return res.json({books : database.books});
+deardiary.put("/book/update/:isbn",async (req,res) => {
+    const updatedBook = await BookModel.findOneAndUpdate({ISBN: req.params.isbn},
+        {title: req.body.bookTitle},{new:true});
+    return res.json({books : updatedBook});
 });
   /*
 Route             /book/author/update
@@ -221,33 +207,25 @@ Access            public
 Parameters        isbn
 Method            put
 */
-deardiary.put("/book/author/update/:isbn", (req,res) => {
-     database.books.forEach((book) => {
-        if(book.ISBN === req.params.isbn){
-          return book.authors.push(req.body.newAuthor)};
-        });
-    database.authors.forEach((author) =>{
-        if(author.id === req.body.newAuthor)
-        return author.books.push(req.params.isbn); 
-    });    
-    return res.json({books: database.books, authors: database.authors,
+deardiary.put("/book/author/update/:isbn", async(req,res) => {
+    const updatedBooks = await BookModel.findOneAndUpdate({ISBN: req.params.isbn},
+        {$addToSet: {authors : req.body.newAuthor}},{new:true});
+    const updatedAuthor = await AuthorModel.findOneAndUpdate({id: req.body.newAuthor},
+        {$addToSet: {books: req.params.isbn}},{new:true});  
+    return res.json({books: updatedBooks, authors: updatedAuthor,
          message: "New author was added"});
 });
-/*
+/*    
 Route             /author/update/
 Description       update author details(name)
 Access            public
 Parameters        ID
 Method            put
 */
-deardiary.put("/author/update/:ID",(req,res) => {
-     database.authors.forEach((author) => {
-       if(author.id == req.params.ID)  {
-           author.name = req.body.authorName;
-           return;
-       } 
-     });
-     return res.json({authors : database.authors});
+deardiary.put("/author/update/:ID",async(req,res) => {
+    const updatedAuthor = await AuthorModel.findOneAndUpdate({id: req.params.ID},
+        {name: req.body.authorName},{new:true});
+     return res.json({authors : updatedAuthor});
 });
 /*
 Route             /publication/update/
@@ -256,14 +234,10 @@ Access            public
 Parameters        ID
 Method            put
 */
-deardiary.put("/publication/update/:ID",(req,res) => {
-     database.publications.forEach((publication) => {
-       if(publication.id == req.params.ID)  {
-        publication.name = req.body.publicationName;
-           return;
-       } 
-     });
-     return res.json({publications : database.publications});
+deardiary.put("/publication/update/:ID",async(req,res) => {
+   const updatedPublication = await PublicationModel.findOneAndUpdate({id:req.params.ID},
+    {name: req.body.publicationName},{new:true});
+   return res.json({publications : updatedPublication});
 });
 /*
 Route             /publication/book/update/
@@ -272,18 +246,12 @@ Access            public
 Parameters        isbn
 Method            put
 */
-deardiary.put("/publication/book/update/:isbn",(req,res) => {
-    database.publications.forEach((publication) =>{
-     if(publication.id === req.body.pubID){
-         return publication.books.push(req.params.isbn)};
-    }); 
-    
-    database.books.forEach((book) => {
-     if(book.ISBN === req.params.isbn){
-         book.publication = req.body.pubID;
-     return ;}
-    });  
-    return res.json({publications: database.publications,books: database.books,
+deardiary.put("/publication/book/update/:isbn", async (req,res) => {
+  const updatedPublication = await PublicationModel.findOneAndUpdate(
+      {id:req.body.newPublication},{$addToSet:{books:req.params.isbn}},{new:true});
+  const updatedBook = await BookModel.findOneAndUpdate({ISBN: req.params.isbn},
+    {publication: req.body.newPublication},{new:true});
+  return res.json({publications: updatedPublication,books:updatedBook,
     message: "New book has been added"}); 
 });
 /*
@@ -293,12 +261,9 @@ Access            public
 Parameters        isbn
 Method            delete
 */
-deardiary.delete("/book/delete/:isbn",(req,res) => {
-        const updatedBookDatabase = database.books.filter((book) => 
-          book.ISBN !== req.params.isbn
-        );
-        database.books = updatedBookDatabase;
-        return res.json({books: database.books});
+deardiary.delete("/book/delete/:isbn",async(req,res) => {
+  const updatedBookDatabase = await BookModel.findOneAndDelete({ISBN: req.params.isbn});       
+return res.json({books: updatedBookDatabase});
 });
 /*
 Route             /book/delete/author
@@ -307,24 +272,12 @@ Access            public
 Parameters        isbn,authorID
 Method            delete
 */
-deardiary.delete("/book/delete/author/:isbn/:authorID",(req,res) => {
-   database.books.forEach((book) =>{
-       if(book.ISBN === req.params.isbn){
-           const newAuthorList = book.authors.filter((author) => 
-           author !== parseInt(req.params.authorID));
-           book.authors = newAuthorList;
-           return;
-       }
-   });
-   database.authors.forEach((author) => {
-       if(author.id === parseInt(req.params.authorID)){
-           const newBooksList = author.books.filter((book) =>
-           book !== req.params.isbn);
-           author.books = newBooksList;
-           return;
-       }
-   });
-   return res.json({books: database.books, authors: database.authors, 
+deardiary.delete("/book/delete/author/:isbn/:authorID",async(req,res) => {
+   const updatedBook = await BookModel.findOneAndUpdate({ISBN:req.params.isbn},
+    {$pull:{authors: parseInt(req.params.authorID)}},{new:true});
+    const updatedAuthor = await AuthorModel.findOneAndUpdate({id: req.params.authorID},
+        {$pull:{books: req.params.isbn}},{new:true});
+   return res.json({books: updatedBook, authors: updatedAuthor, 
                       message:"author was deleted"});
 });
 /*
@@ -334,12 +287,9 @@ Access            public
 Parameters        ID
 Method            delete
 */
-deardiary.delete("/author/delete/:ID",(req,res) => {
-    const updatedAuthorDatabase = database.authors.filter((author) => 
-    author.id !== parseInt(req.params.ID)
-    );
-    database.authors = updatedAuthorDatabase;
-    return res.json({authors: database.authors});
+deardiary.delete("/author/delete/:ID",async(req,res) => {
+    const updatedAuthorDatabase = await AuthorModel.findOneAndDelete({id: req.params.ID});
+    return res.json({authors: updatedAuthorDatabase});
 });
 /*
 Route             /publication/delete/book
@@ -348,22 +298,12 @@ Access            public
 Parameters        isbn,pubID
 Method            delete
 */
-deardiary.delete("/publication/delete/book/:isbn/:pubID",(req,res) => {
-    database.publications.forEach((publication) =>{
-       if(publication.id === parseInt(req.params.pubID)){
-           const newBooksList = publication.books.filter((book) =>
-           book !== req.params.isbn);
-           publication.books = newBooksList;
-           return;
-       }
-    });
-    database.books.forEach((book) => {
-      if(book.ISBN === req.params.isbn){
-          book.publication = 0;
-          return;
-      }  
-    });
-   return res.json({books: database.books, publications: database.publications});
+deardiary.delete("/publication/delete/book/:isbn/:pubID",async(req,res) => {
+    const updatedPublication = await PublicationModel.findOneAndUpdate(
+        {id: parseInt(req.params.pubID)},{$pull:{books: req.params.isbn}},{new:true});
+    const updatedBook = await BookModel.findOneAndUpdate({ISBN:req.params.isbn},
+        {publication: 0},{new:true});
+   return res.json({books: updatedBook, publications: updatedPublication});
 });
 /*
 Route             /publication/delete
@@ -372,12 +312,10 @@ Access            public
 Parameters        ID
 Method            delete
 */
-deardiary.delete("/publication/delete/:ID",(req,res) => {
-    const updatedPublicationDatabase = database.publications.filter((publication) => 
-    publication.id !== parseInt(req.params.ID)
-    );
-    database.publications = updatedPublicationDatabase;
-    return res.json({publications: database.publications});
+deardiary.delete("/publication/delete/:ID",async(req,res) => {
+ const updatedPublicationDatabase =  await PublicationModel.findOneAndDelete(
+     {id: req.params.ID});   
+    return res.json({publications: updatedPublicationDatabase});
 });
 
 deardiary.listen(3000, () => console.log("Server running😎!!!"));
