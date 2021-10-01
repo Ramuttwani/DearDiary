@@ -4,7 +4,6 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 
-
 //microservices Routes
 const Books = require("./API/Book");
 const Authors = require("./API/Author");
@@ -22,6 +21,5 @@ mongoose.connect(process.env.MONGO_URL
 deardiary.use("/book",Books);
 deardiary.use("/author",Authors);
 deardiary.use("/publication",Publications)
-
 
 deardiary.listen(3000, () => console.log("Server running😎!!!"));
